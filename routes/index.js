@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+const mongoose = require("mongoose");
 var Product = require("../models/products");
 var Cart = require("../models/cart");
 /* GET home page. */
@@ -78,5 +79,43 @@ router.get("/cart/remove-one-from-cart/:id", function(req, res, next) {
     req.session.cart = cart;
     res.redirect("/cart");
   });
+});
+
+/**Add products page (only for admin) *image is a string*/
+// router.get("/add-product", function(req, res, next) {
+//   res.render("shop/add-product", {});
+// });
+
+// router.post("/shop/add-product", function(req, res, next) {
+//   var product = {
+//     _id: new mongoose.Types.ObjectId(),
+//     imagePath: req.body.imagePath,
+//     title: req.body.title,
+//     description: req.body.description,
+//     price: req.body.price
+//   };
+//   var newProduct = new Product(product);
+//   console.log("saving");
+//   newProduct.save();
+//   console.log(newProduct);
+//   res.redirect("/");
+// });
+
+/**Add products page (only for admin) *image is a file*/
+router.get("/add-product", function(req, res, next) {
+  res.render("shop/add-product", {});
+});
+
+router.post("/shop/add-product", function(req, res, next) {
+  var product = {
+    _id: new mongoose.Types.ObjectId(),
+    imagePath: req.body.imagePath,
+    title: req.body.title,
+    description: req.body.description,
+    price: req.body.price
+  };
+  var newProduct = new Product(product);
+  newProduct.save();
+  res.redirect("/");
 });
 module.exports = router;
