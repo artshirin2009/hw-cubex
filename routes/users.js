@@ -6,6 +6,9 @@ var User = require("../models/users");
 var csrf = require("csurf");
 var csrfProtection = csrf();
 
+var checking = require("../config/checking");
+var checkingisAdmin = require("../config/chekingIsAdmin");
+
 router.use(csrfProtection);
 /**Sign Up (Registration)*/
 router.get("/signup", function(req, res) {
@@ -68,7 +71,7 @@ router.get("/logout", function(req, res, next) {
 });
 
 /**Authorized users */
-router.get("/authorized", function(req, res) {
+router.get("/authorized", checkingisAdmin, function(req, res) {
   User.find({}, function(err, docs) {
     if (err) {
       console.log(err);

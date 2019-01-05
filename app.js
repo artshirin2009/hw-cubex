@@ -58,7 +58,7 @@ app.use(
   })
 );
 app.use(express.static(path.join(__dirname, "public")));
-
+app.use(cookieParser());
 app.use(
   session({
     secret: "keyboard cat",
@@ -75,7 +75,12 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(cookieParser());
+app.use(function(req, res, next) {
+  res.locals.login = req.isAuthenticated();
+  res.locals.session = req.session;
+  res.locals.user = req.user;
+  next();
+});
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);

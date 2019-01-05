@@ -38,6 +38,11 @@
                 <button type="submit" class="btn btn-default">Submit</button>
             </form> --}}
             <ul class="nav navbar-nav navbar-right">
+                {{#if user.role}}
+                <li>
+                    <a href="/add-product"><i class="fa fa-upload" aria-hidden="true"></i> Upload product</a>
+                </li>
+                {{/if}}
                 <li>
                     <a href="/cart"><i class="fas fa-shopping-cart"></i> Shopping
                         cart</a>
@@ -52,17 +57,20 @@
                     <a href="#" class="dropdown-toggle user-name-area" data-toggle="dropdown" role="button"
                         aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-tie"></i>
                         User
-
+                        {{#if user}}
+                        {{user.email}}
+                        {{else}}
                         managment
-
+                        {{/if}}
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-
-                        <li><a href="/users/authorized">Authorized users</a></li>
+                        {{#if login}}
                         <li><a href="/users/logout">Logout</a></li>
-
-                        <li><a href="/users/signup">Sign Up (Registration)</a></li>
-                        <li><a href="/users/login">Sign In (Login)</a></li>
+                        <li><a href="/users/authorized">Authorized Users</a></li>
+                        {{else}}
+                        <li><a href="/users/signup">Registration</a></li>
+                        <li><a href="/users/login">Log In</a></li>
+                        {{/if}}
 
                     </ul>
                 </li>
