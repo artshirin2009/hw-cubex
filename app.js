@@ -7,12 +7,27 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
+var session = require("express-session");
+var MongoStore = require("connect-mongo")(session);
+
 var dotenv = require("dotenv").config();
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 
 var app = express();
+
+const mongoose = require("mongoose");
+mongoose.connect(
+  `${process.env.DB_URL}${process.env.DB_NAME}`,
+  {
+    useNewUrlParser: true
+  },
+  function(err) {
+    if (err) throw err;
+    console.log("Successfully connected");
+  }
+);
 
 // view engine setup
 app.engine(
