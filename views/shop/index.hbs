@@ -1,0 +1,21 @@
+<div class="row">
+    <h3>Products page</h3>
+    {{#each products}}
+    <div class="col-sm-6 col-md-3">
+        <div class="thumbnail">
+            <img src="{{this.imagePath}}" alt="{{this.title}}">
+            <div class="caption">
+                <h3>{{this.title}}</h3>
+                <div class="clearfix">
+                    <div class="price pull-left">
+                        <strong>$ {{this.price}}</strong>
+                    </div>
+                    <a href="#" class="btn btn-success pull-right" role="button">Buy</a>
+                </div>
+                <h4></h4>
+                <p>{{this.description}}</p>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
