@@ -1,3 +1,47 @@
-a {
-  color: #00B7FF;
+.thumbnail {
+    min-height: 410px;
+}
+
+.img_wrap {
+    min-height: 280px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img_wrap img {
+    max-width: 100%;
+}
+
+#inCart {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background: green;
+    color: #fff;
+    font-size: 8px;
+    text-align: center;
+    line-height: 14px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 25px;
+    left: 10px;
+}
+
+.nav>li>div {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.media-left {
+    min-width: 115px;
+}
+
+.media-object {
+    margin: 0 auto;
+    max-height: 100px
 }

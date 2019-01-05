@@ -1,0 +1,23 @@
+<div class="row">
+
+    <h1>{{product.title}}</h1>
+
+    <div class="media">
+        <div class="media-left">
+            <img class="" src="{{product.imagePath}}" alt="{{product.title}}">
+        </div>
+        <div class="media-body">
+            <p>{{product.description}}</p>
+            <div class="price pull-left">
+                <p>Price - <strong>$ {{product.price}}</strong></p>
+                <div> <a href="/details/add-to-cart/{{product._id}}" class="btn btn-success" role="button">Add
+                        to
+                        cart</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>

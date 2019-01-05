@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-md-offset-3 col-md-6">
+        <h1>Cart Page</h1>
+        <h2>Total - {{session.cart.totalPrice}}</h2>
+    </div>
+    {{#each cart}}
+    <div class="col-md-offset-3 col-md-6">
+        <div class="media">
+            <div class="media-left">
+                <a href="#">
+                    <img class="media-object" src="{{this.item.imagePath}}" alt="{{this.item.title}}">
+                </a>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">{{this.item.title}}</h4>
+                <div class="price pull-left">
+                    <p>Price - <strong>$ {{this.item.price}}</strong></p>
+                    <p>Quantity - <strong> {{this.qty}}</strong></p>
+                    <p>Total - <strong> {{this.price}}</strong></p>
+                </div>
+                <div class="pull-right">
+                    <a href="/cart/add-to-cart/{{this.item._id}}"><span class="badge"><i class="fas fa-plus"></span></i></a>
+                    <a href="/cart/remove-one-from-cart/{{this.item._id}}"><span class="badge"><i class="fas fa-minus"></i></span></a>
+                </div>
+
+            </div>
+        </div>
+        <hr class="style5">
+    </div>
+    {{/each}}
+    <div class="col-md-offset-3 col-md-6">
+        <a href="/checkout" class="btn btn-success" role="button">Checkout</a>
+    </div>
+
+</div>
