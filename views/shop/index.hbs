@@ -12,6 +12,11 @@
                     <div class="price pull-left">
                         <strong>$ {{this.price}}</strong>
                     </div>
+                    {{#if ../role }}
+                    <a href="/add-to-cart/delete/{{this._id}}">Delete</a>
+                    <a href="/add-to-cart/edit/{{this._id}}">Edit</a>
+                    {{/if}}
+
                     <a href="/add-to-cart/{{this._id}}" class="btn btn-success pull-right" role="button">Buy</a>
                 </div>
                 <h4></h4>

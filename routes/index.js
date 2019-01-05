@@ -1,13 +1,35 @@
 var express = require("express");
+
+var multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function(req, file, callback) {
+    callback(null, "./public/uploads/");
+  },
+  filename: function(req, file, callback) {
+    callback(null, file.originalname);
+  }
+});
+var upload = multer({ storage: storage });
 var router = express.Router();
+
 const mongoose = require("mongoose");
 var Product = require("../models/products");
 var Cart = require("../models/cart");
 /* GET home page. */
 
 router.get("/", function(req, res, next) {
-  Product.find().then(function(doc) {
+  console.log(req.user);
+  var role;
+  if (req.user !== undefined) {
+    var role = req.user.role;
+  } else {
+    role = 0;
+  }
+  Product.find().then(function(doc, req) {
+    console.log("role - " + role);
     res.render("shop/index", {
+      role: role,
       products: doc
     });
   });
@@ -33,8 +55,8 @@ router.get("/details/add-to-cart/:id", function(req, res, next) {
     cart.add(product, product.id);
     req.session.cart = cart;
     var oldUrl = req.session.oldUrl;
-    req.session.oldUrl = null;
     res.redirect(oldUrl);
+    req.session.oldUrl = null;
   });
 });
 
@@ -106,15 +128,21 @@ router.get("/add-product", function(req, res, next) {
   res.render("shop/add-product", {});
 });
 
-router.post("/shop/add-product", function(req, res, next) {
+router.post("/shop/add-product", upload.single("imageFile"), function(
+  req,
+  res,
+  next
+) {
+  console.log(req.file);
   var product = {
     _id: new mongoose.Types.ObjectId(),
-    imagePath: req.body.imagePath,
+    imagePath: req.file.path.slice(7),
     title: req.body.title,
     description: req.body.description,
     price: req.body.price
   };
   var newProduct = new Product(product);
+
   newProduct.save();
   res.redirect("/");
 });

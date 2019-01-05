@@ -1,11 +1,11 @@
 <h3>Add product page</h3>
 
 
-<form action="/shop/add-product" method="post">
-    <div class="form-group">
+<form action="/shop/add-product" method="post" enctype="multipart/form-data">
+    {{!-- <div class="form-group">
         <label for="imagePath">Image</label>
         <input type="text" class="form-control" id="imagePath" name="imagePath">
-    </div>
+    </div> --}}
     <div class="form-group">
         <label for="title">Title</label>
         <input type="text" class="form-control" id="title" name="title">
@@ -19,11 +19,11 @@
         <input type="text" class="form-control" id="price" name="price">
     </div>
 
-    {{!-- <div class="form-group">
+    <div class="form-group">
         <label for="imageFile">File input</label>
         <input type="file" id="imageFile" name="imageFile">
         <p class="help-block">Upload image here.</p>
-    </div> --}}
+    </div>
 
 
     <button type="submit" class="btn btn-default">Submit</button>
