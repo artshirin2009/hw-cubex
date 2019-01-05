@@ -10,12 +10,11 @@ var logger = require("morgan");
 var session = require("express-session");
 var MongoStore = require("connect-mongo")(session);
 
+var passport = require("passport");
+var flash = require("connect-flash");
+
 var dotenv = require("dotenv").config();
-
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-
-var app = express();
+var bodyParser = require("body-parser"); //добавляем парсер для обработки данных так как post запросы прилетают в body
 
 const mongoose = require("mongoose");
 mongoose.connect(
@@ -28,6 +27,13 @@ mongoose.connect(
     console.log("Successfully connected");
   }
 );
+
+var indexRouter = require("./routes/index");
+var usersRouter = require("./routes/users");
+
+var app = express();
+
+require("./config/passport");
 
 // view engine setup
 app.engine(
@@ -44,8 +50,32 @@ app.set("view engine", "hbs");
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+
+app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+);
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: false,
+    saveUninitialized: false,
+    store: new MongoStore({
+      mongooseConnection: mongoose.connection,
+      ttl: 10000 // = 14 days. Default
+    })
+  })
+);
+
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(cookieParser());
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
