@@ -11,6 +11,7 @@ const storage = multer.diskStorage({
   }
 });
 var upload = multer({ storage: storage });
+
 var router = express.Router();
 
 const mongoose = require("mongoose");
@@ -133,7 +134,6 @@ router.post("/shop/add-product", upload.single("imageFile"), function(
   res,
   next
 ) {
-  console.log(req.file);
   var product = {
     _id: new mongoose.Types.ObjectId(),
     imagePath: req.file.path.slice(7),
@@ -146,4 +146,50 @@ router.post("/shop/add-product", upload.single("imageFile"), function(
   newProduct.save();
   res.redirect("/");
 });
+/**Deleting products (only for admin) */
+router.get("/delete/:id", function(req, res, next) {
+  var id = req.params.id;
+  Product.findByIdAndRemove(id).exec();
+  res.redirect("/");
+});
+/**Editing products (only for admin) */
+router.get("/edit/:id", function(req, res, next) {
+  var productId = req.params.id;
+  Product.findById(productId, function(err, product) {
+    if (err) {
+      console.log(err);
+    }
+    res.render("admin/edit-product", {
+      product
+    });
+  });
+});
+
+router.post("/edit-product", upload.single("imageFile"), function(
+  req,
+  res,
+  next
+) {
+  var productId = req.body.id;
+  Product.findById(productId, function(err, product) {
+    if (err) {
+      console.log(err);
+    }
+    if (req.file) {
+      product.imagePath = req.file.path.slice(7);
+    }
+    if (req.body.title) {
+      product.title = req.body.title;
+    }
+    if (req.body.description) {
+      product.description = req.body.description;
+    }
+    if (req.body.price) {
+      product.price = req.body.price;
+    }
+    product.save();
+  });
+  res.redirect("/");
+});
+
 module.exports = router;

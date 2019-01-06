@@ -12,14 +12,21 @@
                     <div class="price pull-left">
                         <strong>$ {{this.price}}</strong>
                     </div>
-                    {{#if ../role }}
-                    <a href="/add-to-cart/delete/{{this._id}}">Delete</a>
-                    <a href="/add-to-cart/edit/{{this._id}}">Edit</a>
-                    {{/if}}
+                    <div class="btns-group pull-right">
 
-                    <a href="/add-to-cart/{{this._id}}" class="btn btn-success pull-right" role="button">Buy</a>
+                        {{#if ../role }}
+                        <a class="btn btn-warning" href="/edit/{{this._id}}">Edit</a>
+                        <a class="btn btn-danger" href="/delete/{{this._id}}">Delete</a>
+                        {{!-- {{else }} --}}
+                        <a href="/add-to-cart/{{this._id}}" class="btn btn-success" role="button">Buy</a>
+                        {{/if}}
+
+
+
+                    </div>
+
+
                 </div>
-                <h4></h4>
                 <p>{{this.description}}</p>
             </div>
         </div>
