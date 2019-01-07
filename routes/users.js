@@ -76,11 +76,15 @@ router.get("/authorized", checkingisAdmin, function(req, res) {
     if (err) {
       console.log(err);
     }
-    console.log(req.session.passport.user);
+
     res.render("users/authorized", {
       users: docs
     });
   });
 });
 
+/**Profile page*/
+router.get("/profile", checking, function(req, res) {
+  res.render("users/profile", {});
+});
 module.exports = router;

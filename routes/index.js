@@ -259,7 +259,7 @@ router.get("/success-page", function(req, res, next) {
   });
 });
 
-router.get("/all-orders", function(req, res, next) {
+router.get("/all-orders", checking, function(req, res, next) {
   Order.find({}, function(err, docs) {
     if (err) {
       console.log(err);
