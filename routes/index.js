@@ -17,10 +17,16 @@ var router = express.Router();
 const mongoose = require("mongoose");
 var Product = require("../models/products");
 var Cart = require("../models/cart");
+var Order = require("../models/order");
+
+var csrf = require("csurf");
+var csrfProtection = csrf();
 
 var checking = require("../config/checking");
 var checkingisAdmin = require("../config/chekingIsAdmin");
 /* GET home page. */
+
+router.use(csrfProtection);
 
 router.get("/", function(req, res, next) {
   console.log(req.user);
@@ -196,5 +202,71 @@ router.post(
     res.redirect("/");
   }
 );
+/**Stripe payment + Orders page */
+router.get("/checkout", checking, function(req, res, next) {
+  if (!req.session.cart) {
+    return res.redirect("/shop");
+  }
+  var cart = new Cart(req.session.cart ? req.session.cart : {});
+  var errMsg = req.flash("error")[0];
+  res.render("shop/checkout", {
+    totalPrice: cart.totalPrice,
+    errMsg: errMsg,
+    noErrors: !errMsg,
+    csrfToken: req.csrfToken()
+  });
+});
 
+router.post("/checkout", checking, function(req, res, next) {
+  if (!req.session.cart) {
+    return res.redirect("/shop");
+  }
+  var cart = new Cart(req.session.cart ? req.session.cart : {});
+  var stripe = require("stripe")("sk_test_uBQlq7NlnCsHw9ogz0RsAOQE");
+
+  stripe.charges.create(
+    {
+      amount: cart.totalPrice * 100,
+      currency: "usd",
+      source: req.body.stripeToken, // obtained with Stripe.js
+      description: "Test Charge"
+    },
+    function(err, charge) {
+      if (err) {
+        req.flash("error", err.message);
+        return res.redirect("/checkout");
+      }
+      var order = new Order({
+        user: req.user,
+        cart: cart,
+        adress: req.body.address,
+        name: req.body.name,
+        paymantId: charge.id
+      });
+      order.save(function(err, result) {
+        req.flash("success", "Successfully bought product");
+        req.session.cart = null;
+        res.redirect("/success-page");
+      });
+    }
+  );
+});
+router.get("/success-page", function(req, res, next) {
+  var successMsg = req.flash("success")[0];
+  res.render("success-page", {
+    successMsg: successMsg,
+    noMessage: !successMsg
+  });
+});
+
+router.get("/all-orders", function(req, res, next) {
+  Order.find({}, function(err, docs) {
+    if (err) {
+      console.log(err);
+    }
+    res.render("admin/all-orders", {
+      orders: docs
+    });
+  });
+});
 module.exports = router;
