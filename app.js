@@ -30,7 +30,7 @@ mongoose.connect(
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-
+var adminRouter = require("./routes/admin");
 var app = express();
 
 require("./config/passport");
@@ -83,7 +83,9 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use("/", adminRouter);
 app.use("/", indexRouter);
+
 app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler

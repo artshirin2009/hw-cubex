@@ -1,14 +1,26 @@
 <div class="row">
-
-    <div class="col-sm-6 col-md-3">
-        <ul class="list-group">
-            {{#each orders}}<li class="list-group-item">
-                <p>{{this.name}}</p>
-                <p>{{#each this.cart.items}} <p>{{this.item.title}}</p> {{/each}}</p>
-                <p>{{this.adress}}</p>
-
-            </li>{{/each}}
-        </ul>
-    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Order Id</th>
+                <th>Order info</th>
+                <th>Customer info</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each orders}}
+            <tr>
+                <th scope="row">{{this.paymantId}}</th>
+                <td>{{#each this.cart.items}} <p>{{this.item.title}}</p> {{/each}}</td>
+                <td>
+                    <p>{{this.name}}</p>
+                    <p>{{this.adress}}</p>
+                </td>
+                <td>{{this.totalPrice}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
 
 </div>
