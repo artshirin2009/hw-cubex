@@ -1,23 +1,23 @@
-var express = require("express");
+var express = require('express');
 
 var router = express.Router();
 
-const mongoose = require("mongoose");
-var Cart = require("../models/cart");
+const mongoose = require('mongoose');
+var Cart = require('../models/cart');
 
-var Product = require("../models/products");
+var Product = require('../models/products');
 
-var csrf = require("csurf");
+var csrf = require('csurf');
 var csrfProtection = csrf();
 
-var checking = require("../config/checking");
-var checkingisAdmin = require("../config/chekingIsAdmin");
+var checking = require('../config/checking');
+var checkingisAdmin = require('../config/chekingIsAdmin');
 /* GET home page. */
 
 router.use(csrfProtection);
 
-router.get("/", function(req, res, next) {
-  console.log(req.user);
+router.get('/', function(req, res, next) {
+  console.log(Date.now());
   var role;
   if (req.user !== undefined) {
     var role = req.user.role;
@@ -25,8 +25,8 @@ router.get("/", function(req, res, next) {
     role = 0;
   }
   Product.find().then(function(doc, req) {
-    console.log("role - " + role);
-    res.render("shop/index", {
+    console.log('role - ' + role);
+    res.render('shop/index', {
       role: role,
       products: doc
     });
@@ -34,18 +34,18 @@ router.get("/", function(req, res, next) {
 });
 
 /**Details page */
-router.get("/details/:id", function(req, res, next) {
+router.get('/details/:id', function(req, res, next) {
   var productId = req.params.id;
   req.session.oldUrl = req.url;
   Product.findById(productId, function(err, product) {
     console.log(product);
-    res.render("shop/details-product", {
+    res.render('shop/details-product', {
       product: product
     });
   });
 });
 
-router.get("/details/add-to-cart/:id", function(req, res, next) {
+router.get('/details/add-to-cart/:id', function(req, res, next) {
   var productId = req.params.id;
   var cart = new Cart(req.session.cart ? req.session.cart : {});
 
@@ -58,46 +58,46 @@ router.get("/details/add-to-cart/:id", function(req, res, next) {
   });
 });
 
-router.get("/add-to-cart/:id", function(req, res, next) {
+router.get('/add-to-cart/:id', function(req, res, next) {
   var productId = req.params.id;
   var cart = new Cart(req.session.cart ? req.session.cart : {});
 
   Product.findById(productId, function(err, product) {
     cart.add(product, product.id);
     req.session.cart = cart;
-    res.redirect("/");
+    res.redirect('/');
   });
 });
 
-router.get("/cart", function(req, res, next) {
+router.get('/cart', function(req, res, next) {
   var cart = new Cart(req.session.cart ? req.session.cart : {});
   if (cart.totalQty < 1) {
-    res.redirect("/");
+    res.redirect('/');
   } else {
-    res.render("shop/cart", {
+    res.render('shop/cart', {
       cart: cart.generateArray()
     });
   }
 });
 
-router.get("/cart/add-to-cart/:id", function(req, res, next) {
+router.get('/cart/add-to-cart/:id', function(req, res, next) {
   var productId = req.params.id;
   var cart = new Cart(req.session.cart ? req.session.cart : {});
 
   Product.findById(productId, function(err, product) {
     cart.add(product, product.id);
     req.session.cart = cart;
-    res.redirect("/cart");
+    res.redirect('/cart');
   });
 });
-router.get("/cart/remove-one-from-cart/:id", function(req, res, next) {
+router.get('/cart/remove-one-from-cart/:id', function(req, res, next) {
   var productId = req.params.id;
   var cart = new Cart(req.session.cart ? req.session.cart : {});
 
   Product.findById(productId, function(err, product) {
     cart.remove(product, product.id);
     req.session.cart = cart;
-    res.redirect("/cart");
+    res.redirect('/cart');
   });
 });
 

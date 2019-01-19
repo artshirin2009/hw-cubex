@@ -1,5 +1,7 @@
 <h3>Add product page</h3>
-
+{{#if hasErrors}}
+<div class="alert alert-danger">{{messages}}</div>
+{{/if}}
 
 <form action="/shop/add-product" method="post" enctype="multipart/form-data">
     {{!-- <div class="form-group">

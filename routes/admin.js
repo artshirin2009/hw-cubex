@@ -1,39 +1,63 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
 
-var multer = require("multer");
+var multer = require('multer');
 const storage = multer.diskStorage({
   destination: function(req, file, callback) {
-    callback(null, "./public/uploads/");
+    callback(null, './public/uploads/');
   },
   filename: function(req, file, callback) {
-    callback(null, file.originalname);
+    callback(null, Date.now() + file.originalname.toString().slice(-4));
   }
 });
 var upload = multer({ storage: storage });
 
-const mongoose = require("mongoose");
-var passport = require("passport");
+const mongoose = require('mongoose');
+var passport = require('passport');
 
-var User = require("../models/users");
-var Order = require("../models/order");
-var Product = require("../models/products");
+var User = require('../models/users');
+var Order = require('../models/order');
+var Product = require('../models/products');
 
-var checking = require("../config/checking");
-var checkingisAdmin = require("../config/chekingIsAdmin");
-
+var checking = require('../config/checking');
+var checkingisAdmin = require('../config/chekingIsAdmin');
 /**Sign Up (Registration)*/
 
 /**Add products page (only for admin) *image is a file*/
-router.get("/add-product", checkingisAdmin, function(req, res, next) {
-  res.render("shop/add-product", {});
+router.get('/add-product', checkingisAdmin, function(req, res, next) {
+  res.render('shop/add-product', {});
 });
 
 router.post(
-  "/shop/add-product",
+  '/shop/add-product',
   checkingisAdmin,
-  upload.single("imageFile"),
+  upload.single('imageFile'),
   function(req, res, next) {
+    if (req.body.title.length < 3) {
+      messages = '1';
+      res.render('shop/add-product', {
+        messages: "Title shoudn't be less then 3 symbols.",
+        hasErrors: messages.length > 0
+      });
+      return;
+    }
+    if (req.body.description.length < 5) {
+      messages = '1';
+      res.render('shop/add-product', {
+        messages: "Description shoudn't be less then 5 symbols.",
+        hasErrors: messages.length > 0
+      });
+      return;
+    }
+    var price = req.body.price;
+    if (price.match(/\D/g, '') != null) {
+      messages = '1';
+      res.render('shop/add-product', {
+        messages: 'Price should be a number.',
+        hasErrors: messages.length > 0
+      });
+      return;
+    }
     var product = {
       _id: new mongoose.Types.ObjectId(),
       imagePath: req.file.path.slice(7),
@@ -42,34 +66,33 @@ router.post(
       price: req.body.price
     };
     var newProduct = new Product(product);
-
     newProduct.save();
-    res.redirect("/");
+    res.redirect('/');
   }
 );
 /**Deleting products (only for admin) */
-router.get("/delete/:id", checkingisAdmin, function(req, res, next) {
+router.get('/delete/:id', checkingisAdmin, function(req, res, next) {
   var id = req.params.id;
   Product.findByIdAndRemove(id).exec();
-  res.redirect("/");
+  res.redirect('/');
 });
 /**Editing products (only for admin) */
-router.get("/edit/:id", checkingisAdmin, function(req, res, next) {
+router.get('/edit/:id', checkingisAdmin, function(req, res, next) {
   var productId = req.params.id;
   Product.findById(productId, function(err, product) {
     if (err) {
       console.log(err);
     }
-    res.render("admin/edit-product", {
+    res.render('admin/edit-product', {
       product
     });
   });
 });
 
 router.post(
-  "/edit-product",
+  '/edit-product',
   checkingisAdmin,
-  upload.single("imageFile"),
+  upload.single('imageFile'),
   function(req, res, next) {
     var productId = req.body.id;
     Product.findById(productId, function(err, product) {
@@ -90,29 +113,29 @@ router.post(
       }
       product.save();
     });
-    res.redirect("/");
+    res.redirect('/');
   }
 );
 
 /**Get Authorized users */
-router.get("/authorized", checkingisAdmin, function(req, res) {
+router.get('/authorized', checkingisAdmin, function(req, res) {
   User.find({}, function(err, docs) {
     if (err) {
       console.log(err);
     }
 
-    res.render("users/authorized", {
+    res.render('users/authorized', {
       users: docs
     });
   });
 });
 /**Get All orders*/
-router.get("/all-orders", checking, function(req, res, next) {
+router.get('/all-orders', checking, function(req, res, next) {
   Order.find({}, function(err, docs) {
     if (err) {
       console.log(err);
     }
-    res.render("admin/all-orders", {
+    res.render('admin/all-orders', {
       orders: docs.reverse()
     });
   });

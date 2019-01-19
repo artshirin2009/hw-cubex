@@ -13,8 +13,16 @@
     </div>
     <div class="form-group">
         <label for="role">role</label>
-        <input type="number" class="form-control" id="role" name="role">
+        {{!-- <input type="number" class="form-control" id="role" name="role"> --}}
+        <select name="role" class="form-control">
+            <option type="number" class="form-control" id="role" value="0">user</option>
+            <option type="number" class="form-control" id="role" value="1">admin</option>
+        </select>
     </div>
+
+
+
+
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <button type="submit" class="btn btn-default">Submit</button>
 </form>
